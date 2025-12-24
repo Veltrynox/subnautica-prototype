@@ -11,16 +11,19 @@ namespace SubnauticaClone
         public float interactDistance = 3f;
         private float checkRate = 0.1f;
         private float nextCheckTime;
-        [SerializeField] private GameObject pickupUI;
+        private GameObject pickupUI;
         private Transform cam;
 
         private void Awake()
         {
             cam = Camera.main != null ? Camera.main.transform : null;
+            pickupUI = LevelBuilder.Instance.SpatialUI.GetComponent<SpatialUI>().PickupUI;
         }
 
         void Update()
         {
+            if (cam == null) return;
+
             if (Time.time > nextCheckTime)
             {
                 nextCheckTime = Time.time + checkRate;
@@ -31,23 +34,15 @@ namespace SubnauticaClone
                     if (interactable != null)
                     {
                         pickupUI.SetActive(true);
-                        pickupUI.transform.SetParent(hit.collider.transform);
-                        pickupUI.transform.localPosition = Vector3.zero;
-                        pickupUI.transform.localRotation = Quaternion.identity;
-                        pickupUI.transform.localScale = Vector3.one * 1.2f;
-                    }
-                    else
-                    {
-                        pickupUI.SetActive(false);
-                        if (pickupUI.transform.parent != null)
-                        {
-                            pickupUI.transform.SetParent(null);
-                        }
+                        
+                        // Get bounds to center and scale the UI correctly
+                        Renderer renderer = hit.collider.GetComponentInChildren<Renderer>();
+                        Bounds bounds = renderer != null ? renderer.bounds : hit.collider.bounds;
+                        pickupUI.transform.position = bounds.center;
+                        pickupUI.transform.localScale = bounds.size * 1.1f;
                     }
                 }
-                else
-                {
-                    pickupUI.transform.SetParent(null);
+                else {
                     pickupUI.SetActive(false);
                 }
             }

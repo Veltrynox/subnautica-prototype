@@ -11,6 +11,7 @@ namespace SubnauticaClone
         [SerializeField] private GameObject playerHUDPrefab;
         [SerializeField] private GameObject levelGUIPrefab;
         [SerializeField] private GameObject gameManagerPrefab;
+        [SerializeField] private GameObject spatialUIPrefab;
 
         [Header("Dependencies")]
         [SerializeField] private PlayerSpawner playerSpawner;
@@ -19,8 +20,7 @@ namespace SubnauticaClone
         public GameObject LevelGUI { get; private set; }
         public GameObject GameManager { get; private set; }
         public GameObject Player { get; private set; }
-
-        #region Unity events
+        public GameObject SpatialUI { get; private set; }
 
         protected override void Awake()
         {
@@ -29,10 +29,10 @@ namespace SubnauticaClone
             PlayerHUD = Instantiate(playerHUDPrefab);
             LevelGUI = Instantiate(levelGUIPrefab);
             GameManager = Instantiate(gameManagerPrefab);
+            SpatialUI = Instantiate(spatialUIPrefab);
 
             playerSpawner.Spawn(PlayerHUD);
             Player = playerSpawner.Player;
         }
-        #endregion
     }
 }
